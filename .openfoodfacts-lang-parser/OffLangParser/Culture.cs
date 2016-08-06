@@ -24,9 +24,17 @@
             CultureData result;
             if (!cultures.TryGetValue(key, out result))
             {
-                var info = new CultureInfo(name.Replace('_', '-'));
-                result = info != null ? new CultureData(info) : new CultureData(name);
-                cultures.Add(key, result);
+                try
+                {
+                    var info = new CultureInfo(name.Replace('_', '-'));
+                    result = info != null ? new CultureData(info) : new CultureData(name);
+                    cultures.Add(key, result);
+                }
+                catch (CultureNotFoundException)
+                {
+                    result = new CultureData(name);
+                    cultures.Add(key, result);
+                }
             }
 
             return result;
